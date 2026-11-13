@@ -1,5 +1,27 @@
+import { useState } from 'react';
+
 
 function Login() {
+const [message, setMessage] = useState('');
+const [username, setName] = useState('');
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  const response = await fetch('http://localhost:4000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: username
+    })
+  });
+
+  const data = await response.json();
+
+  setMessage(data.message);
+}
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
 
@@ -21,8 +43,7 @@ function Login() {
           Please login to your account.
         </p>
 
-        <form className="space-y-5">
-
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="mb-2 block text-sm font-medium">
               Email Address
@@ -30,6 +51,8 @@ function Login() {
 
             <input
               type="email"
+              value={username}
+                onChange={(e) => setName(e.target.value)}
               placeholder="Enter your email"
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
@@ -55,6 +78,11 @@ function Login() {
           </button>
 
         </form>
+        {message && (
+  <p className="mt-4 text-center font-semibold text-green-600">
+    {message}
+  </p>
+)}
       </div>
     </main>
   );
